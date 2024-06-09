@@ -6,6 +6,11 @@ export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
   const searchQuery = req.query.search;
   console.log("searchQuery:", searchQuery);
 
+  const startDate = new Date(req.query.startDate); 
+  const endDate = new Date(req.query.endDate);
+  const category = req.query.category; 
+  
+
   let filter = { expired: false };
 
   if (searchQuery) {
@@ -15,10 +20,23 @@ export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
         { title: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for job title
         { city: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for company name
         { location: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for location
-        // Add more fields as needed
       ],
     };
   }
+
+  
+  if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+    filter.jobPostedOn = { $gte: startDate, $lte: endDate };
+  } else if (!isNaN(startDate.getTime())) {
+    filter.jobPostedOn = { $gte: startDate };
+  } else if (!isNaN(endDate.getTime())) {
+    filter.jobPostedOn = { $lte: endDate };
+  }
+
+  if (category) {
+    filter.category = category;
+  }
+
 
   console.log("Filter:", JSON.stringify(filter, null, 2)); // Pretty-print the filter object for clarity
 
