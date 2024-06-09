@@ -3,7 +3,28 @@ import { Job } from "../models/jobSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 
 export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
-  const jobs = await Job.find({ expired: false });
+  const searchQuery = req.query.search;
+  console.log("searchQuery:", searchQuery);
+
+  let filter = { expired: false };
+
+  if (searchQuery) {
+    filter = {
+      ...filter,
+      $or: [
+        { title: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for job title
+        { city: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for company name
+        { location: { $regex: new RegExp(searchQuery, 'i') } }, // Case-insensitive search for location
+        // Add more fields as needed
+      ],
+    };
+  }
+
+  console.log("Filter:", JSON.stringify(filter, null, 2)); // Pretty-print the filter object for clarity
+
+  const jobs = await Job.find(filter);
+  console.log("Jobs found:", jobs); // Log the retrieved jobs for debugging
+
   res.status(200).json({
     success: true,
     jobs,

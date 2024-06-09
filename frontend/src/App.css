@@ -10,6 +10,67 @@
 ::-webkit-scrollbar {
   display: none;
 }
+/* Basic Styling */
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+/* Placeholder Styling */
+.search-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Add Search Icon */
+.search-box .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 18px;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.search-input:focus + .search-icon {
+  color: #007BFF;
+}
+
+/* Example Media Query for Responsiveness */
+@media (max-width: 600px) {
+  .search-box {
+    width: 90%;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .search-box .search-icon {
+    font-size: 16px;
+  }
+}
+
 h1 {
   font-size: 4rem;
 }

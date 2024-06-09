@@ -6,11 +6,12 @@ import { Context } from "../../main";
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const { isAuthorized } = useContext(Context);
+  const [searchTerm,setSearchTerm]=useState("")
   const navigateTo = useNavigate();
   useEffect(() => {
     try {
       axios
-        .get("http://localhost:4000/api/v1/job/getall", {
+        .get(`http://localhost:4000/api/v1/job/getall?search=${searchTerm.length>0?searchTerm:''}`, {
           withCredentials: true,
         })
         .then((res) => {
@@ -19,15 +20,29 @@ const Jobs = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [searchTerm]);
+
+
   if (!isAuthorized) {
     navigateTo("/");
   }
+
+  
+
 
   return (
     <section className="jobs page">
       <div className="container">
         <h1>ALL AVAILABLE JOBS</h1>
+        <div className="search-box">
+  <input type="text"  value={searchTerm} placeholder="search..." onChange={(e)=>setSearchTerm(e.target.value)} className="search-input"/>
+  <i className="search-icon fas fa-search"></i>
+</div>
+
+
+
+
+     
         <div className="banner">
           {jobs.jobs &&
             jobs.jobs.map((element) => {
